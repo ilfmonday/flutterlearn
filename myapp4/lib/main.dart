@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:camera/camera.dart';
 import 'shopitem.dart';
 import 'helloWord.dart';
 import 'animatedList.dart';
@@ -129,3 +130,41 @@ void main() {
   ));
 }
 
+class CameraApp extends StatefulWidget {
+  @override
+  _CameraAppState createState() => new _CameraAppState();
+}
+
+List<CameraDescription> cameras;
+class _CameraAppState extends State<CameraApp> {
+  CameraController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = new CameraController(cameras[0], ResolutionPreset.medium);
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!controller.value.isInitialized) {
+      return new Container();
+    }
+    return new AspectRatio(
+        aspectRatio:
+        controller.value.aspectRatio,
+        child: new CameraPreview(controller));
+  }
+}
